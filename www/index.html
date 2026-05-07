@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>GymRat — Comunidades</title>
+    <link rel="stylesheet" href="/css/app.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <main class="app-main">
+        <section id="screen-home" class="screen hidden">
+          <header class="hero-block">
+            <p class="eyebrow">GymRat</p>
+            <h1>Sua rotina, em comunidade</h1>
+            <p class="lede">
+              Entre com um login simples, crie ou entre em uma comunidade, faça check-in no calendário e
+              acompanhe quem treinou em cada dia.
+            </p>
+          </header>
+          <div class="actions">
+            <div id="home-logged" class="hidden">
+              <p class="session-hi">Olá, <strong id="home-login-name"></strong></p>
+              <button type="button" class="btn btn--primary" id="btn-go-communities">Minhas comunidades</button>
+              <button type="button" class="btn btn--ghost" id="btn-logout">Sair deste aparelho</button>
+            </div>
+            <div id="home-guest">
+              <button type="button" class="btn btn--primary" id="btn-go-login">Entrar</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-login" class="screen screen--narrow hidden">
+          <button type="button" class="link-back" id="btn-login-back">← Voltar</button>
+          <h2>Entrar</h2>
+          <p class="hint">
+            Não há autenticação forte: login e senha geram um id no servidor; só o login e o token ficam
+            salvos neste navegador.
+          </p>
+          <form class="form" id="form-login">
+            <label class="field">
+              <span>Login</span>
+              <input name="login" autocomplete="username" placeholder="ex.: maria" required />
+            </label>
+            <label class="field">
+              <span>Senha</span>
+              <input name="password" type="password" autocomplete="current-password" required />
+            </label>
+            <p class="form-error hidden" id="login-error"></p>
+            <button type="submit" class="btn btn--primary" id="btn-login-submit">Continuar</button>
+          </form>
+        </section>
+
+        <section id="screen-hub" class="screen hidden">
+          <button type="button" class="link-back" id="btn-hub-back">← Início</button>
+          <h2>Comunidades</h2>
+
+          <section class="panel">
+            <h3>Criar comunidade</h3>
+            <form class="form form--inline" id="form-create">
+              <input name="name" placeholder="Nome da comunidade" aria-label="Nome da comunidade" />
+              <button type="submit" class="btn btn--primary">Criar</button>
+            </form>
+          </section>
+
+          <section class="panel">
+            <h3>Entrar com código</h3>
+            <form class="form form--inline" id="form-join">
+              <input
+                name="code"
+                placeholder="Código de 6 letras/números"
+                maxlength="8"
+                aria-label="Código de convite"
+              />
+              <button type="submit" class="btn btn--secondary">Entrar</button>
+            </form>
+          </section>
+
+          <p class="banner-msg hidden" id="hub-banner"></p>
+
+          <section class="panel">
+            <h3>Suas comunidades</h3>
+            <p class="muted hidden" id="hub-empty">Você ainda não está em nenhuma. Crie uma ou entre com um código.</p>
+            <ul class="community-list" id="hub-list"></ul>
+          </section>
+        </section>
+
+        <section id="screen-community" class="screen community hidden">
+          <button type="button" class="link-back" id="btn-community-back">← Comunidades</button>
+
+          <header class="community__head">
+            <h2 id="community-name"></h2>
+            <p class="community__code">
+              Código: <strong id="community-code"></strong>
+              <button type="button" class="btn btn--tiny" id="btn-copy-code">Copiar</button>
+            </p>
+          </header>
+
+          <div class="community__checkin">
+            <button type="button" class="btn btn--primary" id="btn-checkin">Fazer check-in hoje</button>
+          </div>
+
+          <section class="panel">
+            <div id="calendar-root"></div>
+          </section>
+
+          <section class="panel">
+            <h3>Notificações</h3>
+            <form class="form form--notif" id="form-notif">
+              <textarea name="message" rows="3" placeholder="Escreva um aviso para a comunidade…"></textarea>
+              <button type="submit" class="btn btn--secondary">Publicar</button>
+            </form>
+            <p class="muted hidden" id="notif-empty">Nenhuma notificação ainda.</p>
+            <ul class="notif-list" id="notif-list"></ul>
+          </section>
+        </section>
+
+        <div id="modal-day" class="modal-backdrop hidden" role="presentation">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="day-modal-title">
+            <h3 id="day-modal-title"></h3>
+            <p class="muted hidden" id="day-modal-empty">Ninguém fez check-in neste dia.</p>
+            <ul class="checkin-names" id="day-modal-list"></ul>
+            <button type="button" class="btn btn--secondary" id="btn-day-close">Fechar</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="/js/app.js"></script>
+  </body>
+</html>
