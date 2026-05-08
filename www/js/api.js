@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3000/api'
+const API_BASE = 'https://buenex-my-apis.duckdns.org/fit-community/api'
 
 function getToken() {
   return localStorage.getItem('community_fit_token')
