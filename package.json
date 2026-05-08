@@ -1,5 +1,5 @@
 {
-  "name": "gymratporj",
+  "name": "communityFitProj",
   "private": true,
   "scripts": {
     "docker:up": "docker compose up --build",

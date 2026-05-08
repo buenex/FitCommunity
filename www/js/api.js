@@ -1,11 +1,11 @@
-const API_BASE = '/api'
+const API_BASE = 'http://localhost:3000/api'
 
 function getToken() {
-  return localStorage.getItem('gymrat_token')
+  return localStorage.getItem('community_fit_token')
 }
 
 export function getSessionUser() {
-  const raw = localStorage.getItem('gymrat_user')
+  const raw = localStorage.getItem('community_fit_user')
   if (!raw) return null
   try {
     return JSON.parse(raw)
@@ -15,13 +15,13 @@ export function getSessionUser() {
 }
 
 export function setSession({ user, token }) {
-  localStorage.setItem('gymrat_token', token)
-  localStorage.setItem('gymrat_user', JSON.stringify(user))
+  localStorage.setItem('community_fit_token', token)
+  localStorage.setItem('community_fit_user', JSON.stringify(user))
 }
 
 export function clearSession() {
-  localStorage.removeItem('gymrat_token')
-  localStorage.removeItem('gymrat_user')
+  localStorage.removeItem('community_fit_token')
+  localStorage.removeItem('community_fit_user')
 }
 
 function authHeaders() {

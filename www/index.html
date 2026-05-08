@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>GymRat — Comunidades</title>
-    <link rel="stylesheet" href="/css/app.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <title>Community Fit — Comunidades</title>
+    <link rel="stylesheet" href="./css/app.css"/>
   </head>
   <body>
     <div id="app" class="app-shell">
       <main class="app-main">
         <section id="screen-home" class="screen hidden">
           <header class="hero-block">
-            <p class="eyebrow">GymRat</p>
+            <p class="eyebrow">Community Fit</p>
             <h1>Sua rotina, em comunidade</h1>
             <p class="lede">
               Entre com um login simples, crie ou entre em uma comunidade, faça check-in no calendário e
@@ -95,6 +95,12 @@
               Código: <strong id="community-code"></strong>
               <button type="button" class="btn btn--tiny" id="btn-copy-code">Copiar</button>
             </p>
+            <div class="align" hidden>
+              <h1 id="streak">
+                X
+              </h1>
+              <h5> dias consecutivos.</h5>
+            </div>
           </header>
 
           <div class="community__checkin">
@@ -127,6 +133,6 @@
       </main>
     </div>
 
-    <script type="module" src="/js/app.js"></script>
+    <script type ="module" src="./js/app.js"></script>
   </body>
 </html>

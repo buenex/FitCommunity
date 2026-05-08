@@ -1,4 +1,4 @@
--- GymRat — PostgreSQL schema
+-- community_fit — PostgreSQL schema
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE users (

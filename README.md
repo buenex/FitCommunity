@@ -1,4 +1,4 @@
-# GymRat
+# Community Fit
 
 App web estático em `www/`, API Express em `api/`, worker consumidor RabbitMQ em `worker/`, PostgreSQL e RabbitMQ via Docker.
 

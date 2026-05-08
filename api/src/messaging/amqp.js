@@ -1,7 +1,7 @@
 import amqplib from 'amqplib'
 
-export const EXCHANGE = 'gymrat.events'
-export const WORKER_QUEUE = 'gymrat.worker'
+export const EXCHANGE = 'community_fit.events'
+export const WORKER_QUEUE = 'community_fit.worker'
 
 let connection
 let channel

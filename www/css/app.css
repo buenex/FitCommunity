@@ -521,3 +521,8 @@ body {
   font-size: 0.75rem;
   color: #78716c;
 }
+
+.align{
+  display: none !important;
+  display: ruby;
+}
