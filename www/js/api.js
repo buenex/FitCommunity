@@ -82,6 +82,16 @@ export async function fetchCommunity(id) {
   return res.json()
 }
 
+export async function patchCommunity(id, body) {
+  const res = await fetch(`${API_BASE}/communities/${id}`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(await parseError(res))
+  return res.json()
+}
+
 export async function postCheckin(communityId, date) {
   const res = await fetch(`${API_BASE}/communities/${communityId}/checkins`, {
     method: 'POST',

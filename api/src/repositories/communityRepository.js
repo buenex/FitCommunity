@@ -3,7 +3,8 @@ import { query } from './db.js'
 export async function insertCommunity({ id, name, inviteCode }) {
   const { rows } = await query(
     `INSERT INTO communities (id, name, invite_code) VALUES ($1, $2, $3)
-     RETURNING id, name, invite_code AS "inviteCode", created_at AS "createdAt"`,
+     RETURNING id, name, invite_code AS "inviteCode",
+       streak_days_target AS "streakDaysTarget", created_at AS "createdAt"`,
     [id, name, inviteCode],
   )
   return rows[0]
@@ -11,7 +12,8 @@ export async function insertCommunity({ id, name, inviteCode }) {
 
 export async function findByInviteCode(inviteCode) {
   const { rows } = await query(
-    `SELECT id, name, invite_code AS "inviteCode", created_at AS "createdAt"
+    `SELECT id, name, invite_code AS "inviteCode",
+            streak_days_target AS "streakDaysTarget", created_at AS "createdAt"
      FROM communities WHERE invite_code = $1`,
     [inviteCode],
   )
@@ -20,9 +22,20 @@ export async function findByInviteCode(inviteCode) {
 
 export async function findById(id) {
   const { rows } = await query(
-    `SELECT id, name, invite_code AS "inviteCode", created_at AS "createdAt"
+    `SELECT id, name, invite_code AS "inviteCode",
+            streak_days_target AS "streakDaysTarget", created_at AS "createdAt"
      FROM communities WHERE id = $1`,
     [id],
+  )
+  return rows[0] ?? null
+}
+
+export async function updateStreakDaysTarget(communityId, streakDaysTarget) {
+  const { rows } = await query(
+    `UPDATE communities SET streak_days_target = $2 WHERE id = $1
+     RETURNING id, name, invite_code AS "inviteCode",
+       streak_days_target AS "streakDaysTarget", created_at AS "createdAt"`,
+    [communityId, streakDaysTarget],
   )
   return rows[0] ?? null
 }

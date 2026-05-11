@@ -1,5 +1,14 @@
 import * as api from './api.js'
-import { formatDayModalTitle, formatMonthTitle, monthGrid, toDateKey, weekdayLabels } from './dates.js'
+import {
+  formatDayModalTitle,
+  formatLongDatePt,
+  formatMonthTitle,
+  monthGrid,
+  nextWeekStartSunday,
+  toDateKey,
+  weekdayLabels,
+  weekDateKeysFromSunday,
+} from './dates.js'
 
 /** @type {'home'|'login'|'hub'|'community'} */
 let screen = 'home'
@@ -212,11 +221,97 @@ function updateCheckinButton() {
   btn.textContent = already ? 'Check-in de hoje feito' : 'Fazer check-in hoje'
 }
 
+function ensureStreakSelectPopulated() {
+  const sel = /** @type {HTMLSelectElement | null} */ ($('select-streak-target'))
+  if (!sel || sel.options.length > 0) return
+  for (let n = 2; n <= 6; n++) {
+    const o = document.createElement('option')
+    o.value = String(n)
+    o.textContent = `${n} dias`
+    sel.appendChild(o)
+  }
+}
+
+function renderStreak() {
+  if (!community) return
+  ensureStreakSelectPopulated()
+
+  const rawTarget = Number(community.streakDaysTarget ?? 4)
+  const target = Number.isFinite(rawTarget) ? Math.min(6, Math.max(2, Math.round(rawTarget))) : 4
+  const sel = /** @type {HTMLSelectElement | null} */ ($('select-streak-target'))
+  if (sel) sel.value = String(target)
+
+  const user = api.getSessionUser()
+  const root = $('streak-week-root')
+  const summary = $('streak-summary')
+  const encourage = $('streak-encourage')
+  if (!root || !summary || !encourage) return
+
+  const todayKey = toDateKey(new Date())
+  const weekKeys = weekDateKeysFromSunday(new Date())
+  const labels = weekdayLabels()
+  const byDate = community.checkinsByDate || {}
+  /** @type {Set<string>} */
+  const checked = new Set()
+  for (const key of weekKeys) {
+    const list = byDate[key] || []
+    if (user && list.some((m) => m.userId === user.userId)) checked.add(key)
+  }
+
+  const done = checked.size
+  const slotsAhead = weekKeys.filter((k) => k >= todayKey && !checked.has(k)).length
+  const stillPossible = done + slotsAhead >= target
+  const met = done >= target
+
+  root.innerHTML = ''
+  const row = document.createElement('div')
+  row.className = 'streak-week__row'
+  for (let i = 0; i < 7; i++) {
+    const key = weekKeys[i]
+    const has = checked.has(key)
+    const cell = document.createElement('div')
+    cell.className = 'streak-day'
+    if (has) cell.classList.add('streak-day--done')
+    else if (key < todayKey) cell.classList.add('streak-day--missed')
+    else cell.classList.add('streak-day--upcoming')
+    if (key === todayKey) cell.classList.add('streak-day--today')
+
+    const lab = document.createElement('span')
+    lab.className = 'streak-day__wd'
+    lab.textContent = labels[i]
+    const num = document.createElement('span')
+    num.className = 'streak-day__num'
+    num.textContent = String(Number(key.slice(8)))
+    cell.append(lab, num)
+    row.appendChild(cell)
+  }
+  root.appendChild(row)
+
+  if (met) {
+    summary.textContent = `Você bateu a meta desta semana (${target} ${target === 1 ? 'dia' : 'dias'}). Parabéns!`
+    encourage.classList.add('hidden')
+    encourage.textContent = ''
+  } else {
+    summary.textContent = `Esta semana: ${done} de ${target} dias com check-in.`
+    if (!stillPossible) {
+      const nextStart = nextWeekStartSunday(new Date())
+      encourage.textContent =
+        'Não dá mais para completar a meta nesta semana, mas isso faz parte — foque no que vem por aí. ' +
+        `A próxima sequência começa no domingo, ${formatLongDatePt(nextStart)}.`
+      encourage.classList.remove('hidden')
+    } else {
+      encourage.classList.add('hidden')
+      encourage.textContent = ''
+    }
+  }
+}
+
 function renderCommunityView() {
   if (!community) return
   $('community-name').textContent = community.name
   $('community-code').textContent = community.inviteCode
   updateCheckinButton()
+  renderStreak()
   renderCalendar()
   renderNotifications()
 }
@@ -346,6 +441,19 @@ function wire() {
       const { community: next } = await api.postNotification(community.id, message)
       community = next
       e.target.reset()
+      renderCommunityView()
+    } catch (ex) {
+      alert(ex.message || String(ex))
+    }
+  })
+
+  $('form-streak-target').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    if (!community) return
+    const fd = new FormData(e.target)
+    const streakDaysTarget = Number(fd.get('streakDaysTarget'))
+    try {
+      community = await api.patchCommunity(community.id, { streakDaysTarget })
       renderCommunityView()
     } catch (ex) {
       alert(ex.message || String(ex))

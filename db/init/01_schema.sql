@@ -13,6 +13,7 @@ CREATE TABLE communities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   invite_code VARCHAR(8) NOT NULL UNIQUE,
+  streak_days_target SMALLINT NOT NULL DEFAULT 4 CHECK (streak_days_target BETWEEN 2 AND 6),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

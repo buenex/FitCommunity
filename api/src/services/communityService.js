@@ -56,6 +56,30 @@ export async function joinByInviteCode({ inviteCode, userId }) {
   return getCommunityFull(community.id, userId)
 }
 
+export async function setStreakDaysTarget({ communityId, userId, streakDaysTarget }) {
+  if (!isUuid(communityId)) {
+    const err = new Error('Id de comunidade inválido.')
+    err.statusCode = 400
+    throw err
+  }
+  const n = Number(streakDaysTarget)
+  if (!Number.isInteger(n) || n < 2 || n > 6) {
+    throw new Error('A meta da sequência semanal deve ser um número inteiro entre 2 e 6 dias.')
+  }
+
+  const member = await memberRepository.isMember(communityId, userId)
+  if (!member) {
+    const err = new Error('Você não participa desta comunidade.')
+    err.statusCode = 403
+    throw err
+  }
+
+  const updated = await communityRepository.updateStreakDaysTarget(communityId, n)
+  if (!updated) return null
+
+  return getCommunityFull(communityId, userId)
+}
+
 export async function getCommunityFull(communityId, requesterUserId) {
   if (!isUuid(communityId)) return null
 
@@ -75,10 +99,15 @@ export async function getCommunityFull(communityId, requesterUserId) {
     notificationRepository.listNotifications(communityId, 50),
   ])
 
+  const streakRaw = Number(base.streakDaysTarget)
+  const streakDaysTarget =
+    Number.isFinite(streakRaw) && streakRaw >= 2 && streakRaw <= 6 ? streakRaw : 4
+
   return {
     id: base.id,
     name: base.name,
     inviteCode: base.inviteCode,
+    streakDaysTarget,
     members,
     checkinsByDate: groupCheckinsByDate(checkinRows),
     notifications,

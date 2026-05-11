@@ -36,3 +36,41 @@ export function formatDayModalTitle(dateKey) {
 export function weekdayLabels() {
   return WEEKDAY_LABELS_PT
 }
+
+/** Semana domingo–sábado (fuso local) que contém `ref`. Retorna o domingo ao meio-dia local. */
+export function startOfWeekSunday(ref = new Date()) {
+  const d = new Date(ref)
+  const day = d.getDay()
+  d.setDate(d.getDate() - day)
+  d.setHours(12, 0, 0, 0)
+  return d
+}
+
+/** As sete chaves YYYY-MM-DD da semana (domingo → sábado) que contém `ref`. */
+export function weekDateKeysFromSunday(ref = new Date()) {
+  const start = startOfWeekSunday(ref)
+  const keys = []
+  for (let i = 0; i < 7; i++) {
+    const x = new Date(start)
+    x.setDate(start.getDate() + i)
+    keys.push(toDateKey(x))
+  }
+  return keys
+}
+
+/** Próximo domingo após o início da semana atual de `ref` (início da próxima sequência). */
+export function nextWeekStartSunday(ref = new Date()) {
+  const start = startOfWeekSunday(ref)
+  const n = new Date(start)
+  n.setDate(start.getDate() + 7)
+  return n
+}
+
+export function formatLongDatePt(d) {
+  return new Intl.DateTimeFormat('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(d)
+}

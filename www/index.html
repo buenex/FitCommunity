@@ -95,17 +95,29 @@
               Código: <strong id="community-code"></strong>
               <button type="button" class="btn btn--tiny" id="btn-copy-code">Copiar</button>
             </p>
-            <div class="align" hidden>
-              <h1 id="streak">
-                X
-              </h1>
-              <h5> dias consecutivos.</h5>
-            </div>
           </header>
 
           <div class="community__checkin">
             <button type="button" class="btn btn--primary" id="btn-checkin">Fazer check-in hoje</button>
           </div>
+
+          <section class="panel streak-panel" aria-labelledby="streak-heading">
+            <h3 id="streak-heading">Sequência da semana</h3>
+            <p class="muted streak-panel__hint">
+              Contamos a semana de <strong>domingo a sábado</strong>. A meta é o número de dias nesta semana em
+              que você faz check-in (não precisam ser seguidos).
+            </p>
+            <form class="form form--inline form--streak" id="form-streak-target">
+              <label class="field field--inline">
+                <span>Meta da comunidade</span>
+                <select name="streakDaysTarget" id="select-streak-target" aria-label="Dias da meta semanal"></select>
+              </label>
+              <button type="submit" class="btn btn--secondary">Salvar meta</button>
+            </form>
+            <div id="streak-week-root" class="streak-week" aria-label="Dias da semana"></div>
+            <p id="streak-summary" class="streak-summary"></p>
+            <p id="streak-encourage" class="streak-encourage hidden" role="status"></p>
+          </section>
 
           <section class="panel">
             <div id="calendar-root"></div>

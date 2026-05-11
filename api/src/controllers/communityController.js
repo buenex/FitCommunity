@@ -59,6 +59,33 @@ export async function getOne(req, res, next) {
   }
 }
 
+export async function patchOne(req, res, next) {
+  try {
+    const { id } = req.params
+    if (!isUuid(id)) {
+      res.status(400).json({ error: 'Id de comunidade inválido.' })
+      return
+    }
+    const body = req.body ?? {}
+    if (body.streakDaysTarget === undefined) {
+      res.status(400).json({ error: 'Envie streakDaysTarget (2 a 6).' })
+      return
+    }
+    const community = await communityService.setStreakDaysTarget({
+      communityId: id,
+      userId: req.user.userId,
+      streakDaysTarget: body.streakDaysTarget,
+    })
+    if (!community) {
+      res.status(404).json({ error: 'Comunidade não encontrada.' })
+      return
+    }
+    res.json(community)
+  } catch (e) {
+    next(e)
+  }
+}
+
 export async function checkin(req, res, next) {
   try {
     const { id } = req.params
